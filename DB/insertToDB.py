@@ -41,7 +41,7 @@ def timeChange(DB):
     rows = cur.fetchall()
     if not rows:
         return rows
-    cur.execute("DELETE FROM today")
+    cur.execute(f"DELETE FROM {DB}")
     conn.commit()
     #conn.close()
     return rows
@@ -51,26 +51,17 @@ def insertToHour(hour):
     if not rows:
         print("empty DB!! return")
         return
-    temperature, humidity, dust, CO2 = 0.0, 0.0, 0.0, 0.0
+    temperature, humidity, dust, CO2 = 0, 0, 0, 0
     id = rows[-1][0]  # 마지막 값의 아이디
-    try:
-        for i in rows:
-            temperature += i[2]
-            humidity += i[3]
-            dust += i[4]
-            CO2 += i[5]
-    except TypeError as e:  # 자꾸 i[4]가 str이 아닌데 str이라고 에러남 쉬발거 컨버트해보고 안되면 걍 안넣음
-        print(e, " try str to float")
-        try:
-            a = float(i[4])
-            b = float(i[5])
-            dust += a
-            CO2 += b
-        except:
-            print("error, return")
-            return
-    t = [hour, temperature / id, humidity / id, dust / id, CO2 / id]
-    cur.execute('INSERT INTO tomonth VALUES (?, ?, ?, ?, ?)', t)
+    
+    for i in rows:
+        temperature += i[2]
+        humidity += i[3]
+        dust += i[4]
+        CO2 += i[5]
+        
+    t = [hour, round(temperature / id), round(humidity / id), round(dust / id), round(CO2 / id)]
+    cur.execute('INSERT INTO tohour VALUES (?, ?, ?, ?, ?)', t)
     conn.commit()
     # conn.close()
 
@@ -82,23 +73,13 @@ def insertToMonth(day):
         return
     temperature, humidity, dust, CO2 = 0.0, 0.0, 0.0, 0.0
     id = rows[-1][0]  # 마지막 값의 아이디
-    try:
-        for i in rows:
-            temperature += i[2]
-            humidity += i[3]
-            dust += i[4]
-            CO2 += i[5]
-    except TypeError as e: #자꾸 i[4]가 str이 아닌데 str이라고 에러남 쉬발거 컨버트해보고 안되면 걍 안넣음
-        print(e, " try str to float")
-        try:
-            a = float(i[4])
-            b = float(i[5])
-            dust += a
-            CO2 += b
-        except:
-            print("error, return")
-            return
-    t = [day, temperature / id, humidity / id, dust / id, CO2 / id]
+    for i in rows:
+        temperature += i[2]
+        humidity += i[3]
+        dust += i[4]
+        CO2 += i[5]
+    t = [day, round(temperature / id), round(humidity / id), round(dust / id), round(CO2 / id)]
+    print("insert to tohour")
     cur.execute('INSERT INTO tomonth VALUES (?, ?, ?, ?, ?)', t)
     conn.commit()
     #conn.close()
@@ -145,19 +126,20 @@ tempday = now
 
 
 while True:
-    '''
     now = datetime.datetime.now()
+    '''
     if tempminute.second != now.second:  # 즉, 날짜가 바뀌면
         insertToHour(tempminute.strftime('%Y-%m-%d %H:%M:%S'))
         tempminute = now
         now = datetime.datetime.now()
     '''
+    print(tempday, now)
     if tempday.day != now.day:  # 즉, 날짜가 바뀌면
         insertToMonth(tempday.strftime('%Y-%m-%d %H:%M:%S'))
         insertToLocal()
         tempday = now
         now = datetime.datetime.now()
-
+    
     elif tempday.hour != now.hour:  # 즉, 시간이가 바뀌면
         insertToHour(tempday.strftime('%Y-%m-%d %H:%M:%S'))
         insertToLocal()

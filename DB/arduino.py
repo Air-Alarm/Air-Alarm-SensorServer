@@ -6,7 +6,7 @@ RX = serial.Serial('/dev/ttyACM0', baudrate=9600)
 def Slicing():
     #RX.write(b't')  # 아스키코드로 t 시리얼 통신 보내기
     read = RX.readline()
-
+    
     Time = ""
     Temp = ""
     Humi = ""
@@ -45,8 +45,8 @@ def Slicing():
             Dust = Dust + chr(read[i + 2])
             if chr(read[i + 3]) != ",":
                 Dust = Dust + chr(read[i + 3])
-            if chr(read[i + 4]) != ",":
-                Dust = Dust + chr(read[i + 4])
+                if chr(read[i + 4]) != ",":
+                    Dust = Dust + chr(read[i + 4])
 
         if chr(read[i]) == "C":  # 먼지 넣기 한자리수면 하나 두자릿수면 둘 세자리수면 셋 네자리수면 넷
             Co2 = Co2 + chr(read[i + 2])
@@ -66,3 +66,5 @@ def Slicing():
     # print("Co2: ",Co2)
 
     return Temp, Humi, Dust, Co2
+
+print(Slicing())
