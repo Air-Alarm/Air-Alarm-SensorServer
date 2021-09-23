@@ -6,6 +6,8 @@ import sys, os
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from API import dust, weather
 
+import random   
+
 #conn = sqlite3.connect("Test.db", check_same_thread=False)
 path = os.path.abspath("Test.db")
 print(path)
@@ -27,7 +29,7 @@ def insertTo():
 
     try:
         t = [nowtime, temperature, humidity, dust, CO2]
-        cur.execute('INSERT INTO today VALUES (?, ?, ?, ?, ?)', t)
+        cur.execute('INSERT INTO tonow VALUES (?, ?, ?, ?, ?)', t)
         conn.commit()
         #conn.close()
         print("insert complete")
@@ -47,7 +49,7 @@ def timeChange(DB):
     return rows
 
 def insertToHour(hour):
-    rows = timeChange("today") #실시간 디비 가져오기
+    rows = timeChange("tonow") #실시간 디비 가져오기
     if not rows:
         print("empty DB!! return")
         return
@@ -66,7 +68,7 @@ def insertToHour(hour):
     # conn.close()
 
 #실시간 디비에서 불러온 값의 평균을 개월간 디비에 저장
-def insertToMonth(day):
+def insertToDay(day):
     rows = timeChange("tohour") #시간당 디비 가져오기
     if not rows:
         print("empty DB!! return")
@@ -80,7 +82,7 @@ def insertToMonth(day):
         CO2 += i[5]
     t = [day, round(temperature / id), round(humidity / id), round(dust / id), round(CO2 / id)]
     print("insert to tohour")
-    cur.execute('INSERT INTO tomonth VALUES (?, ?, ?, ?, ?)', t)
+    cur.execute('INSERT INTO today VALUES (?, ?, ?, ?, ?)', t)
     conn.commit()
     #conn.close()
 
@@ -99,7 +101,7 @@ def insertToLocal():
 
 #각 테이블 생성, 얘는 한번씩만 실행되면 됨
 try:
-    conn.execute('CREATE TABLE today(time TEXT, temperature real, humidity real, dust real, CO2 real)') #실시간 디비
+    conn.execute('CREATE TABLE tonow(time TEXT, temperature real, humidity real, dust real, CO2 real)') #실시간 디비
 except (sqlite3.OperationalError, sqlite3.ProgrammingError) as e:
     print("dbMakeError : ", e)
 
@@ -109,7 +111,7 @@ except (sqlite3.OperationalError, sqlite3.ProgrammingError) as e:
     print("dbMakeError : ", e)
 
 try:
-    conn.execute('CREATE TABLE tomonth(time TEXT, temperature real, humidity real, dust real, CO2 real)') #일 평균 디비
+    conn.execute('CREATE TABLE today(time TEXT, temperature real, humidity real, dust real, CO2 real)') #일 평균 디비
 except sqlite3.OperationalError as e:
     print("dbMakeError : ", e)
 
@@ -135,7 +137,7 @@ while True:
     '''
     print(tempday, now)
     if tempday.day != now.day:  # 즉, 날짜가 바뀌면
-        insertToMonth(tempday.strftime('%Y-%m-%d %H:%M:%S'))
+        insertToDay(tempday.strftime('%Y-%m-%d %H:%M:%S'))
         insertToLocal()
         tempday = now
         now = datetime.datetime.now()

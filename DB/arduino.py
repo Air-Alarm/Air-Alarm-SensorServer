@@ -67,4 +67,4 @@ def Slicing():
 
     return Temp, Humi, Dust, Co2
 
-print(Slicing())
+#print(Slicing())
