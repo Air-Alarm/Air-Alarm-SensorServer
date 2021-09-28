@@ -16,28 +16,29 @@ cur = conn.cursor()
 
 
 def insertTo():
-    # 테이블이 없으면 생성, 있으면 에러메시지 출력
-    # 센서에서 값 못받아오면 그냥 종료
+    # 센서에서 값 받아오도록 시도
     try:
         temperature, humidity, dust, CO2 = arduino.Slicing()
     except Exception as e:
         print("arduino error: ", e)
-        return
+        return # 못 받아오면 그냥 종료
 
     nowtime = datetime.datetime.now()
     nowtime = nowtime.strftime('%Y-%m-%d %H:%M:%S')
 
-    try:
+    try: # 센서에서 받은 값 + 현재 시간 해가지고 DB에 삽입
         t = [nowtime, temperature, humidity, dust, CO2]
         cur.execute('INSERT INTO tonow VALUES (?, ?, ?, ?, ?)', t)
         conn.commit()
         #conn.close()
         print("insert complete")
-    except Exception as e:
+    except Exception as e: # 오류 발생시 그냥 종료
         print("insertTo error : ", e)
 
 
-# 디비에서 모든 값을 불러와서 리턴하고 해당 디비는 전체 삭제
+# 디비에서 모든 값을 불러와서 리턴하고 해당 디비는 전체 삭제하는 함수
+# 시간이나 날짜 바뀌면 디비 초기화 해야해서 만든 함수
+# ex) 23일 -> 24일로 가면 일간디비 초기화해야하니까
 def timeChange(DB):
     cur.execute(f"SELECT rowid, * FROM {DB}")
     rows = cur.fetchall()
@@ -47,15 +48,17 @@ def timeChange(DB):
     conn.commit()
     #conn.close()
     return rows
-
+'''
+# 실시간 DB -> 1시간당 DB
 def insertToHour(hour):
     rows = timeChange("tonow") #실시간 디비 가져오기
-    if not rows:
+    if not rows: # DB 오류로 비어있을 경우
         print("empty DB!! return")
         return
     temperature, humidity, dust, CO2 = 0, 0, 0, 0
     id = rows[-1][0]  # 마지막 값의 아이디
-    
+
+    # 전체 값의 평균 내는중
     for i in rows:
         temperature += i[2]
         humidity += i[3]
@@ -65,9 +68,8 @@ def insertToHour(hour):
     t = [hour, round(temperature / id), round(humidity / id), round(dust / id), round(CO2 / id)]
     cur.execute('INSERT INTO tohour VALUES (?, ?, ?, ?, ?)', t)
     conn.commit()
-    # conn.close()
 
-#실시간 디비에서 불러온 값의 평균을 개월간 디비에 저장
+# 1시간당 DB -> 일간 DB
 def insertToDay(day):
     rows = timeChange("tohour") #시간당 디비 가져오기
     if not rows:
@@ -80,12 +82,31 @@ def insertToDay(day):
         humidity += i[3]
         dust += i[4]
         CO2 += i[5]
+        
     t = [day, round(temperature / id), round(humidity / id), round(dust / id), round(CO2 / id)]
-    print("insert to tohour")
     cur.execute('INSERT INTO today VALUES (?, ?, ?, ?, ?)', t)
     conn.commit()
-    #conn.close()
+'''
 
+# 시간 혹은 날짜가 바뀔때 하위 DB를 초기화하고 평균을 삽입
+def insertToDB(oldDB, youngDB, time):
+    rows = timeChange(f"to{oldDB}")  # 시간당 디비 가져오기
+    if not rows:
+        print("empty DB!! return")
+        return
+    temperature, humidity, dust, CO2 = 0.0, 0.0, 0.0, 0.0
+    id = rows[-1][0]  # 마지막 값의 아이디
+    for i in rows:
+        temperature += i[2]
+        humidity += i[3]
+        dust += i[4]
+        CO2 += i[5]
+
+    t = [day, round(temperature / id), round(humidity / id), round(dust / id), round(CO2 / id)]
+    cur.execute(f'INSERT INTO to{youngDB} VALUES (?, ?, ?, ?, ?)', t)
+    conn.commit()
+
+# API에서 받은 값 DB에 삽입하는 함수
 def insertToLocal():
     try:
         t = dust.dustApi()
@@ -124,30 +145,22 @@ except sqlite3.OperationalError as e:
 
 now = datetime.datetime.now()
 tempday = now
-#tempminute = now
 
-
+# 함수 실행시 무한루프 돌리면서 DB에 값 넣음
 while True:
     now = datetime.datetime.now()
-    '''
-    if tempminute.second != now.second:  # 즉, 날짜가 바뀌면
-        insertToHour(tempminute.strftime('%Y-%m-%d %H:%M:%S'))
-        tempminute = now
-        now = datetime.datetime.now()
-    '''
     print(tempday, now)
     if tempday.day != now.day:  # 즉, 날짜가 바뀌면
-        insertToDay(tempday.strftime('%Y-%m-%d'))
+        insertToDB("hour", "day", tempday.strftime('%Y-%m-%d'))
         insertToLocal()
         tempday = now
         now = datetime.datetime.now()
-    
     elif tempday.hour != now.hour:  # 즉, 시간이가 바뀌면
-        insertToHour(tempday.strftime('%Y-%m-%d %H:%M:%S'))
+        insertToDB("now", "hour", tempday.strftime('%Y-%m-%d %H:%M:%S'))
         insertToLocal()
         tempday = now
         now = datetime.datetime.now()
 
-
+    # 실시간 DB 함수
     insertTo()
-    time.sleep(1)
+    #time.sleep(1)

@@ -5,21 +5,22 @@ from DB import getFromDB
 api = Flask(__name__)
 api.config['JSON_AS_ASCII'] = False
 
+"""
+모든 페이지는 뒤에 all 붙일시 DB에 쌓인 모든 값 볼 수 있음.
+ex) /get은 최신 1개 센서값, /getall은 쌓여있는 모든 센서값
+"""
 
-@api.route('/get', methods=['GET', 'POST'])
-def get():
-    rows = getFromDB.getFrom("tonow")
-    temp = int(rows[-1][4])
-    temp2 = int(rows[-1][5])
+def changeToJson(DB):
+    rows = getFromDB.getFrom(f"to{DB}")
+    temp = int(rows[-1][4])  # 소수 값 정수화
+    temp2 = int(rows[-1][5])  # 소수 값 정수화
     jsonDic = {"id": rows[-1][0], "time": rows[-1][1], "temperature": rows[-1][2], "humidity": rows[-1][3],
                "dust": temp, "CO2": temp2}
-    return jsonify(jsonDic)
+    return jsonDic
 
-@api.route('/getall', methods=['GET', 'POST'])
-def getall():
-    t = getFromDB.getFrom("tonow")
+def changeToJsonAll(DB):
+    t = getFromDB.getFrom(f"to{DB}")
     jsonArr = []
-    
     for i in range(len(t)):
         temp = int(t[i][4])
         temp2 = int(t[i][5])
@@ -27,59 +28,35 @@ def getall():
             "id": t[i][0], "time": t[i][1], "temperature": t[i][2],
             "humidity": t[i][3], "dust": temp, "CO2": temp2
         })
-    
-    return jsonify(jsonArr)
+    return jsonArr
+
+
+# 실시간 센서 값
+@api.route('/get', methods=['GET', 'POST'])
+def get():
+    return jsonify(changeToJson("now"))
+
+@api.route('/getall', methods=['GET', 'POST'])
+def getall():
+    return jsonify(changeToJsonAll("now"))
 
 
 @api.route('/day', methods=['GET', 'POST'])
 def day():
-    rows = getFromDB.getFrom("today")
-    temp = int(rows[-1][4])
-    temp2 = int(rows[-1][5])
-    jsonDic = {"id": rows[-1][0], "time": rows[-1][1], "temperature": rows[-1][2], "humidity": rows[-1][3],
-               "dust": temp, "CO2": temp2}
-    return jsonify(jsonDic)
+    return jsonify(changeToJson("day"))
 
 @api.route('/dayall', methods=['GET', 'POST'])
 def dayall():
-    t = getFromDB.getFrom("today")
-    jsonArr = []
-    
-    for i in range(len(t)):
-        temp = int(t[i][4])
-        temp2 = int(t[i][5])
-        jsonArr.append({
-            "id": t[i][0], "time": t[i][1], "temperature": t[i][2],
-            "humidity": t[i][3], "dust": temp, "CO2": temp2
-        })
-    
-    return jsonify(jsonArr)
+    return jsonify(changeToJsonAll("day"))
 
 
 @api.route('/hour', methods=['GET', 'POST'])
 def hour():
-    rows = getFromDB.getFrom("tohour")
-    temp = int(rows[-1][4])
-    temp2 = int(rows[-1][5])
-    jsonDic = {"id": rows[-1][0], "time": rows[-1][1], "temperature": rows[-1][2], "humidity": rows[-1][3],
-               "dust": temp, "CO2": temp2}
-    return jsonify(jsonDic)
+    return jsonify(changeToJson("hour"))
 
 @api.route('/hourall', methods=['GET', 'POST'])
 def hourall():
-    t = getFromDB.getFrom("tohour")
-    
-    jsonArr = []
-    
-    for i in range(len(t)):
-        temp = int(t[i][4])
-        temp2 = int(t[i][5])
-        jsonArr.append({
-            "id": t[i][0], "time": t[i][1], "temperature": t[i][2],
-            "humidity": t[i][3], "dust": temp, "CO2": temp2
-        })
-    
-    return jsonify(jsonArr)
+    return jsonify(changeToJsonAll("hour"))
 
 
 @api.route('/weather', methods=['GET', 'POST'])
