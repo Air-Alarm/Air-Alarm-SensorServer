@@ -137,7 +137,7 @@ while True:
     '''
     print(tempday, now)
     if tempday.day != now.day:  # 즉, 날짜가 바뀌면
-        insertToDay(tempday.strftime('%Y-%m-%d %H:%M:%S'))
+        insertToDay(tempday.strftime('%Y-%m-%d'))
         insertToLocal()
         tempday = now
         now = datetime.datetime.now()
