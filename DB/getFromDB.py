@@ -8,6 +8,7 @@ print(path)
 conn = sqlite3.connect(path, check_same_thread=False)
 cur = conn.cursor()
 
+#그냥 DB에서 값 불러오는 함수
 def getFrom(DB):
     cur.execute(f"SELECT rowid, * FROM {DB}")
     rows = cur.fetchall()

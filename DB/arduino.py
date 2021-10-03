@@ -26,14 +26,14 @@ def Slicing():
             Time = Time + chr(read[i + 4])
             Time = Time + chr(read[i + 5])
 
-        if chr(read[i]) == "T":      #온도 넣기
+        elif chr(read[i]) == "T":      #온도 넣기
             Temp = Temp + chr(read[i + 2])
             Temp = Temp + chr(read[i + 3])
             Temp = Temp + chr(read[i + 4])
             if chr(read[i+5]) != ",":  #온도가 10도 이하(문자열 3자리)인 경우를 대비
                 Temp = Temp + chr(read[i + 5])
 
-        if chr(read[i]) == "H":  # 습도 넣기
+        elif chr(read[i]) == "H":  # 습도 넣기
             Humi = Humi + chr(read[i + 2])
             Humi = Humi + chr(read[i + 3])
             Humi = Humi + chr(read[i + 4])
@@ -41,14 +41,14 @@ def Slicing():
                 Humi = Humi + chr(read[i + 5])
 
 
-        if chr(read[i]) == "D":  # 먼지 넣기 한자리수면 하나 두자릿수면 둘 세자리수면 셋...
+        elif chr(read[i]) == "D":  # 먼지 넣기 한자리수면 하나 두자릿수면 둘 세자리수면 셋...
             Dust = Dust + chr(read[i + 2])
             if chr(read[i + 3]) != ",":
                 Dust = Dust + chr(read[i + 3])
                 if chr(read[i + 4]) != ",":
                     Dust = Dust + chr(read[i + 4])
 
-        if chr(read[i]) == "C":  # 먼지 넣기 한자리수면 하나 두자릿수면 둘 세자리수면 셋 네자리수면 넷
+        elif chr(read[i]) == "C":  # 먼지 넣기 한자리수면 하나 두자릿수면 둘 세자리수면 셋 네자리수면 넷
             Co2 = Co2 + chr(read[i + 2])
             if chr(read[i + 3]) != ",":
                 Co2 = Co2 + chr(read[i + 3])
