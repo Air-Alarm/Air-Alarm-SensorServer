@@ -102,7 +102,7 @@ def insertToDB(oldDB, youngDB, time):
         dust += i[4]
         CO2 += i[5]
 
-    t = [day, round(temperature / id), round(humidity / id), round(dust / id), round(CO2 / id)]
+    t = [time, round(temperature / id), round(humidity / id), round(dust / id), round(CO2 / id)]
     cur.execute(f'INSERT INTO to{youngDB} VALUES (?, ?, ?, ?, ?)', t)
     conn.commit()
 
