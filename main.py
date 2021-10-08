@@ -64,7 +64,7 @@ def hourall():
 def weak():
     t = getFromDB.getFrom(f"today")
     jsonArr = []
-    for i in range(len(t) - 8, len(t)):
+    for i in range(len(t) - 7, len(t)):
         temp = int(t[i][4])
         temp2 = int(t[i][5])
         jsonArr.append({
