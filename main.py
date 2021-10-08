@@ -33,114 +33,39 @@ def changeToJsonAll(DB):
 # 실시간 센서 값
 @api.route('/get', methods=['GET', 'POST'])
 def get():
-<<<<<<< HEAD
-    rows = getFromDB.getFrom("tonow")
-    temp = int(rows[-1][4])
-    temp2 = int(rows[-1][5])
-    jsonDic = {"id": rows[-1][0], "time": rows[-1][1], "temperature": rows[-1][2], "humidity": rows[-1][3],
-               "dust": temp, "CO2": temp2}
-    return jsonify(jsonDic)
-
-@api.route('/getall', methods=['GET', 'POST'])
-def getall():
-    t = getFromDB.getFrom("tonow")
-    jsonArr = []
-
-    for i in range(len(t)):
-        temp = int(t[i][4])
-        temp2 = int(t[i][5])
-        jsonArr.append({
-            "id": t[i][0], "time": t[i][1], "temperature": t[i][2],
-            "humidity": t[i][3], "dust": temp, "CO2": temp2
-        })
-
-    return jsonify(jsonArr)
-=======
     return jsonify(changeToJson("now"))
 
 @api.route('/getall', methods=['GET', 'POST'])
 def getall():
     return jsonify(changeToJsonAll("now"))
->>>>>>> 6a2b75715ae1db1d81465c43660bbe9b98bb166c
 
 
 @api.route('/day', methods=['GET', 'POST'])
 def day():
-<<<<<<< HEAD
-    rows = getFromDB.getFrom("today")
-    temp = int(rows[-1][4])
-    temp2 = int(rows[-1][5])
-    jsonDic = {"id": rows[-1][0], "time": rows[-1][1], "temperature": rows[-1][2], "humidity": rows[-1][3],
-               "dust": temp, "CO2": temp2}
-    return jsonify(jsonDic)
-
-@api.route('/dayall', methods=['GET', 'POST'])
-def dayall():
-    t = getFromDB.getFrom("today")
-    jsonArr = []
-
-    for i in range(len(t)):
-        temp = int(t[i][4])
-        temp2 = int(t[i][5])
-        jsonArr.append({
-            "id": t[i][0], "time": t[i][1], "temperature": t[i][2],
-            "humidity": t[i][3], "dust": temp, "CO2": temp2
-        })
-
-    return jsonify(jsonArr)
-=======
     return jsonify(changeToJson("day"))
 
 @api.route('/dayall', methods=['GET', 'POST'])
 def dayall():
     return jsonify(changeToJsonAll("day"))
->>>>>>> 6a2b75715ae1db1d81465c43660bbe9b98bb166c
+
 
 
 @api.route('/hour', methods=['GET', 'POST'])
 def hour():
-<<<<<<< HEAD
-    rows = getFromDB.getFrom("tohour")
-    temp = int(rows[-1][4])
-    temp2 = int(rows[-1][5])
-    jsonDic = {"id": rows[-1][0], "time": rows[-1][1], "temperature": rows[-1][2], "humidity": rows[-1][3],
-               "dust": temp, "CO2": temp2}
-    return jsonify(jsonDic)
-
-@api.route('/hourall', methods=['GET', 'POST'])
-def hourall():
-    t = getFromDB.getFrom("tohour")
-
-    jsonArr = []
-
-    for i in range(len(t)):
-        temp = int(t[i][4])
-        temp2 = int(t[i][5])
-        jsonArr.append({
-            "id": t[i][0], "time": t[i][1], "temperature": t[i][2],
-            "humidity": t[i][3], "dust": temp, "CO2": temp2
-        })
-
-    return jsonify(jsonArr)
-=======
     return jsonify(changeToJson("hour"))
 
 @api.route('/hourall', methods=['GET', 'POST'])
 def hourall():
     return jsonify(changeToJsonAll("hour"))
->>>>>>> 6a2b75715ae1db1d81465c43660bbe9b98bb166c
+
 
 
 @api.route('/weather', methods=['GET', 'POST'])
 def weather():
     rows = getFromDB.getFrom("tolocal")
-<<<<<<< HEAD
-    jsonDic = {"id": rows[-1][0], "Location": rows[-1][1], "time": rows[-1][2], "dust10": rows[-1][3], "dust25": rows[-1][4],
-=======
     temp = int(rows[-1][3])
     temp2 = int(rows[-1][4])
     jsonDic = {"id": rows[-1][0], "Location": rows[-1][1], "time": rows[-1][2], "dust10": temp, "dust25": temp2,
->>>>>>> 6a2b75715ae1db1d81465c43660bbe9b98bb166c
                "humidity": rows[-1][5], "temperature": rows[-1][6]}
     return jsonify(jsonDic)
 
