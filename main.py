@@ -71,7 +71,7 @@ def weak():
             "id": t[i][0], "time": t[i][1], "temperature": t[i][2],
             "humidity": t[i][3], "dust": temp, "CO2": temp2
         })
-    return jsonArr
+    return jsonify(jsonArr)
 
 
 @api.route('/weather', methods=['GET', 'POST'])
