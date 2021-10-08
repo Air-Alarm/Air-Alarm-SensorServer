@@ -39,25 +39,39 @@ def get():
 def getall():
     return jsonify(changeToJsonAll("now"))
 
-
+'''
 @api.route('/day', methods=['GET', 'POST'])
 def day():
     return jsonify(changeToJson("day"))
+'''
 
 @api.route('/dayall', methods=['GET', 'POST'])
 def dayall():
     return jsonify(changeToJsonAll("day"))
 
 
-
+'''
 @api.route('/hour', methods=['GET', 'POST'])
 def hour():
     return jsonify(changeToJson("hour"))
+'''
 
 @api.route('/hourall', methods=['GET', 'POST'])
 def hourall():
     return jsonify(changeToJsonAll("hour"))
 
+@api.route('/weak', methods=['GET', 'POST'])
+def weak():
+    t = getFromDB.getFrom(f"today")
+    jsonArr = []
+    for i in range(len(t), len(t)-8, -1):
+        temp = int(t[i][4])
+        temp2 = int(t[i][5])
+        jsonArr.append({
+            "id": t[i][0], "time": t[i][1], "temperature": t[i][2],
+            "humidity": t[i][3], "dust": temp, "CO2": temp2
+        })
+    return jsonArr
 
 
 @api.route('/weather', methods=['GET', 'POST'])

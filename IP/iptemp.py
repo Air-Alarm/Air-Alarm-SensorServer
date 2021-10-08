@@ -12,6 +12,6 @@ outside = re.search(r'IP Address : (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})', req.te
 print("외부 IP: ", outside)
 
 
-response = requests.get(f"http://mirsv.com:4999/ip?inside={inside}&outside={outside}&SN=skhu0928")
+response = requests.get(f"http://api.air-alarm.site:4999/ip?inside={inside}&outside={outside}&SN=skhu0928")
 
 print(response)
