@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 def dustApi():
 
-    city = "강북구"
+    city = "구로구"
     M=f"&returnType=xml&numOfRows=100&pageNo=1&sidoName=서울&searchCondition=DAILY"
     key="oH3Iy4hZlzlzonDOb7vQlJBmeHig1XMtjcio0V%2B3rZAjoPsLLBwDodrfVGMRvJo5tcW5Cgc8ScGYzLzOHS7KPg%3D%3D"
     url="http://apis.data.go.kr/B552584/ArpltnStatsSvc/getCtprvnMesureSidoLIst?serviceKey=" + key + M

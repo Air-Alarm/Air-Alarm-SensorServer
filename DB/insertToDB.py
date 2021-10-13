@@ -1,7 +1,7 @@
 import sqlite3
 import datetime
 import time
-import arduino
+import STM32
 import sys, os
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from API import dust, weather
@@ -18,7 +18,7 @@ cur = conn.cursor()
 def insertTo():
     # 센서에서 값 받아오도록 시도
     try:
-        temperature, humidity, dust, CO2 = arduino.Slicing()
+        temperature, humidity, dust, CO2 = STM32.Slicing()
     except Exception as e:
         print("arduino error: ", e)
         return # 못 받아오면 그냥 종료

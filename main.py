@@ -13,7 +13,7 @@ def changeToJson(DB):
     rows = getFromDB.getFrom(f"to{DB}")
     temp = int(rows[-1][4])  # 소수 값 정수화
     temp2 = int(rows[-1][5])  # 소수 값 정수화
-    jsonDic = {"id": rows[-1][0], "time": rows[-1][1], "temperature": rows[-1][2], "humidity": rows[-1][3],
+    jsonDic = {"time": rows[-1][1], "temperature": rows[-1][2], "humidity": rows[-1][3],
                "dust": temp, "CO2": temp2}
     return jsonDic
 
@@ -24,7 +24,7 @@ def changeToJsonAll(DB):
         temp = int(t[i][4])
         temp2 = int(t[i][5])
         jsonArr.append({
-            "id": t[i][0], "time": t[i][1], "temperature": t[i][2],
+            "time": t[i][1], "temperature": t[i][2],
             "humidity": t[i][3], "dust": temp, "CO2": temp2
         })
     return jsonArr
@@ -68,7 +68,7 @@ def weak():
         temp = int(t[i][4])
         temp2 = int(t[i][5])
         jsonArr.append({
-            "id": t[i][0], "time": t[i][1], "temperature": t[i][2],
+            "time": t[i][1], "temperature": t[i][2],
             "humidity": t[i][3], "dust": temp, "CO2": temp2
         })
     return jsonify(jsonArr)
@@ -79,7 +79,7 @@ def weather():
     rows = getFromDB.getFrom("tolocal")
     temp = int(rows[-1][3])
     temp2 = int(rows[-1][4])
-    jsonDic = {"id": rows[-1][0], "Location": rows[-1][1], "time": rows[-1][2], "dust10": temp, "dust25": temp2,
+    jsonDic = {"Location": rows[-1][1], "time": rows[-1][2], "dust10": temp, "dust25": temp2,
                "humidity": rows[-1][5], "temperature": rows[-1][6]}
     return jsonify(jsonDic)
 
@@ -98,7 +98,7 @@ def weatherall():
             temp = 0
             temp2 = 0
         jsonArr.append({
-            "id": t[i][0], "Location": t[i][1], "time": t[i][2],
+            "Location": t[i][1], "time": t[i][2],
             "dust10": temp, "dust25": temp2, "humidity": t[i][5], "temperature": t[i][6]
         })
     

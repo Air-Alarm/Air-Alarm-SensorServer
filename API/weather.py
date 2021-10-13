@@ -11,8 +11,8 @@ def weatherApi():
     base_date = base.strftime('%Y%m%d')
     base_time = base.strftime('%H00')
 
-    nx = 38
-    ny = 127
+    nx = 37
+    ny = 126
 
     M=f"&pageNo=1&numOfRows=50&dataType=XML&base_date={base_date}&base_time={base_time}00&nx={nx}&ny={ny}"
     key="oH3Iy4hZlzlzonDOb7vQlJBmeHig1XMtjcio0V%2B3rZAjoPsLLBwDodrfVGMRvJo5tcW5Cgc8ScGYzLzOHS7KPg%3D%3D"
