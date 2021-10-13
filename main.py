@@ -1,3 +1,5 @@
+import datetime
+
 from flask import Flask, jsonify
 from DB import getFromDB
 
@@ -65,6 +67,21 @@ def weak():
     t = getFromDB.getFrom(f"today")
     jsonArr = []
     for i in range(len(t) - 7, len(t)):
+        temp = int(t[i][4])
+        temp2 = int(t[i][5])
+        jsonArr.append({
+            "time": t[i][1], "temperature": t[i][2],
+            "humidity": t[i][3], "dust": temp, "CO2": temp2
+        })
+    return jsonify(jsonArr)
+
+@api.route('/weakm', methods=['GET', 'POST'])
+def weakm():
+    t = getFromDB.getFrom(f"today")
+    jsonArr = []
+    #days = ["월요일", "화요일", "수요일", "목요일", "금요일", "토요일", "일요일"]
+    k = datetime.datetime.today().weekday()
+    for i in range(len(t) - k, len(t)):
         temp = int(t[i][4])
         temp2 = int(t[i][5])
         jsonArr.append({
