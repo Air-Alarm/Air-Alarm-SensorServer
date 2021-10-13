@@ -77,8 +77,13 @@ def weak():
 @api.route('/weather', methods=['GET', 'POST'])
 def weather():
     rows = getFromDB.getFrom("tolocal")
-    temp = int(rows[-1][3])
-    temp2 = int(rows[-1][4])
+    try:
+        temp = int(rows[-1][3])
+        temp2 = int(rows[-1][4])
+    except Exception as e:
+        print(rows[-1][3], rows[-1][4])
+        temp = 0
+        temp2 = 0
     jsonDic = {"Location": rows[-1][1], "time": rows[-1][2], "dust10": temp, "dust25": temp2,
                "humidity": rows[-1][5], "temperature": rows[-1][6]}
     return jsonify(jsonDic)
@@ -90,7 +95,6 @@ def weatherall():
     jsonArr = []
     
     for i in range(len(t)):
-        print(t[i][3], t[i][4])
         try:
             temp = int(t[i][3])
             temp2 = int(t[i][4])
