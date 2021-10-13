@@ -81,7 +81,7 @@ def weakm():
     jsonArr = []
     #days = ["월요일", "화요일", "수요일", "목요일", "금요일", "토요일", "일요일"]
     k = datetime.datetime.today().weekday()
-    for i in range(len(t) - k, len(t)):
+    for i in range(len(t) - k - 1, len(t)):
         temp = int(t[i][4])
         temp2 = int(t[i][5])
         jsonArr.append({
